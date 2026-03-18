@@ -118,6 +118,33 @@ const consulta1 = criarConsulta(
   new Date(),
   350
 );
+const consulta2 = criarConsulta(
+  2,
+  medico2,
+  paciente2,
+  new Date(),
+  250
+);
+const consulta3 = criarConsulta(
+  3,
+  medico3,
+  paciente3,
+  new Date(),
+  150
+);
+
+function listarConsultasPorStatus(
+  consultas: Consulta[],
+  status: StatusConsulta
+): Consulta[] {
+  return consultas.filter((consulta) => consulta.status === status);
+}
+
+const consultas = [consulta1, consulta2, consulta3];
+const consultasConfirmadas = listarConsultasPorStatus(consultas, "confirmada");
+console.log("=== CONSULTAS CONFIRMADAS ===");
+console.log(consultasConfirmadas);
+
 const consultaConfirmada = confirmarConsulta(consulta1);
 console.log("=== CONSULTA CONFIRMADA ===");
 console.log(exibirConsulta(consultaConfirmada));
