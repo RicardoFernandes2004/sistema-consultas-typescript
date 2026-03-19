@@ -88,8 +88,53 @@ Valor: ${valorFormatado}
 Status: ${consulta.status}
 `;
 }
-const consulta1 = criarConsulta(1, medico1, paciente1, new Date(), 350);
-const consultaConfirmada = confirmarConsulta(consulta1);
-console.log("=== CONSULTA CONFIRMADA ===");
-console.log(exibirConsulta(consultaConfirmada));
+const consultas = [];
+// Consulta 1 - agendada
+const consulta1 = criarConsulta(1, medico1, paciente1, new Date(2026, 3, 7), 350);
+// Consulta 2 - agendada
+const consulta2 = criarConsulta(2, medico2, paciente2, new Date(2026, 3, 14), 250);
+// Consulta 3 - futura
+const consulta3 = criarConsulta(3, medico3, paciente3, new Date(2026, 3, 25), 150);
+// Consulta 4 - confirmada
+const consulta4 = criarConsulta(4, medico1, paciente2, new Date(2026, 2, 3), 350);
+// Consulta 5 - cancelada
+const consulta5 = criarConsulta(5, medico2, paciente3, new Date(2026, 2, 4), 250);
+// Consulta 6 - realizada
+const consulta6 = criarConsulta(6, medico3, paciente1, new Date(2026, 2, 5), 150);
+function alterarStatusConsulta(consulta, novoStatus) {
+    return Object.assign(Object.assign({}, consulta), { status: novoStatus });
+}
+// Atualizando status das consultas
+const consulta4Confirmada = alterarStatusConsulta(consulta4, "confirmada");
+const consulta5Cancelada = alterarStatusConsulta(consulta5, "cancelada");
+const consulta6Realizada = alterarStatusConsulta(consulta6, "realizada");
+consultas.push(consulta1, consulta2, consulta3, consulta4Confirmada, consulta5Cancelada, consulta6Realizada);
+function listarConsultasPorStatus(consultas, status) {
+    return consultas.filter((consulta) => consulta.status === status);
+}
+const consultasConfirmadas = listarConsultasPorStatus(consultas, "confirmada");
+console.log("=== CONSULTAS CONFIRMADAS ===");
+consultasConfirmadas.forEach((consulta) => console.log(exibirConsulta(consulta)));
+const consultasCanceladas = listarConsultasPorStatus(consultas, "cancelada");
+console.log("=== CONSULTAS CANCELADAS ===");
+consultasCanceladas.forEach((consulta) => console.log(exibirConsulta(consulta)));
+const consultasRealizadas = listarConsultasPorStatus(consultas, "realizada");
+console.log("=== CONSULTAS REALIZADAS ===");
+consultasRealizadas.forEach((consulta) => console.log(exibirConsulta(consulta)));
+function listarConsultasFuturas(consultas) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // Zera horas para comparar apenas a data
+    return consultas.filter((consulta) => consulta.data >= hoje);
+}
+const consultasFuturas = listarConsultasFuturas(consultas);
+console.log("=== CONSULTAS FUTURAS ===");
+consultasFuturas.forEach((consulta) => console.log(exibirConsulta(consulta)));
+function calcularFaturamento(consultas) {
+    return consultas
+        .filter((consulta) => consulta.status === "realizada")
+        .reduce((total, consulta) => total + consulta.valor, 0);
+}
+const faturamento = calcularFaturamento(consultas);
+console.log("=== FATURAMENTO TOTAL ===");
+console.log(faturamento.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }));
 export {};
